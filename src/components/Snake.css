@@ -1,0 +1,8 @@
+/* src/components/Snake.css */
+.snake-segment {
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    background-color: #000000;
+  }
+  

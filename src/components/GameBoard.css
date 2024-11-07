@@ -1,0 +1,50 @@
+/* src/components/GameBoard.css */
+.game-board {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+  background-color: #A9DF90; /* Light green */
+  background-image: conic-gradient(
+      #A2D148 90deg,
+      #AAD750 90deg 180deg,
+      #A2D148 180deg 270deg,
+      #AAD750 270deg
+    );
+  background-size: 40px 40px; /* Adjust this based on desired cell size */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.game-over {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: red;
+  font-size: 24px;
+  font-weight: bold;
+  z-index: 1;
+}
+
+.reset-button {
+  position: absolute;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 10px 20px;
+  font-size: 16px;
+}
+
+.scoreboard {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  color: white;
+  font-size: 20px;
+  display: column;
+  align-items: center;
+  justify-content: start;
+  font-size: 40px;
+}
