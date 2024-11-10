@@ -6,6 +6,7 @@ import './GameBoard.css';
 
 const CELL_SIZE = 20; // Each cell is 20x20 pixels
 const INITIAL_SPEED = 200;
+const INITIAL_FOOD_COUNT = 5;
 
 function GameBoard() {
   const [boardSize, setBoardSize] = useState({
@@ -13,13 +14,12 @@ function GameBoard() {
     height: Math.floor(window.innerHeight / CELL_SIZE),
   });
   const [snake, setSnake] = useState([{ x: 10, y: 10 }]);
-  const [food, setFood] = useState(generateRandomPosition());
+  const [foods, setFoods] = useState(generateRandomFoodPositions(INITIAL_FOOD_COUNT));
   const [direction, setDirection] = useState({ x: 0, y: 1 });
   const [gameOver, setGameOver] = useState(false);
   const [score, setScore] = useState(0);
   const [speed, setSpeed] = useState(INITIAL_SPEED);
 
-  
   useEffect(() => {
     const updateBoardSize = () => {
       setBoardSize({
@@ -66,16 +66,22 @@ function GameBoard() {
 
     newSnake.unshift(head);
 
-    if (head.x === food.x && head.y === food.y) {
+    // Check if the snake head is on any of the food items
+    const foodEatenIndex = foods.findIndex(food => food.x === head.x && food.y === head.y);
+    if (foodEatenIndex !== -1) {
       setScore(prevScore => prevScore + 1);
-      setFood(generateRandomPosition());
       setSpeed(prevSpeed => Math.max(50, prevSpeed - 10));
+
+      // Replace the eaten food with a new one
+      const newFoods = [...foods];
+      newFoods[foodEatenIndex] = generateRandomPosition();
+      setFoods(newFoods);
     } else {
-      newSnake.pop();
+      newSnake.pop(); // Remove last segment if no food is eaten
     }
 
     setSnake(newSnake);
-  }, [snake, direction, food, gameOver, boardSize]);
+  }, [snake, direction, foods, gameOver, boardSize]);
 
   const checkCollision = (head) => {
     return snake.some(segment => segment.x === head.x && segment.y === head.y);
@@ -84,9 +90,10 @@ function GameBoard() {
   const resetGame = () => {
     setSnake([{ x: 10, y: 10 }]);
     setDirection({ x: 0, y: 1 });
-    setFood(generateRandomPosition());
+    setFoods(generateRandomFoodPositions(INITIAL_FOOD_COUNT));
     setGameOver(false);
     setScore(0);
+    setSpeed(INITIAL_SPEED);
   };
 
   function generateRandomPosition() {
@@ -94,6 +101,14 @@ function GameBoard() {
       x: Math.floor(Math.random() * boardSize.width),
       y: Math.floor(Math.random() * boardSize.height),
     };
+  }
+
+  function generateRandomFoodPositions(count) {
+    const positions = [];
+    for (let i = 0; i < count; i++) {
+      positions.push(generateRandomPosition());
+    }
+    return positions;
   }
 
   return (
@@ -104,16 +119,12 @@ function GameBoard() {
       </div>
       {gameOver && <div className="game-over">Game Over!</div>}
       <Snake segments={snake} />
-      <Food position={food} />
+      {foods.map((food, index) => (
+        <Food key={index} position={food} />
+      ))}
       <button onClick={resetGame} className="reset-button">Restart Game</button>
     </div>
   );
-
-  
-  
-
 }
-
-
 
 export default GameBoard;
